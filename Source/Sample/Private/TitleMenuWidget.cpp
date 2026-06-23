@@ -4,6 +4,7 @@
 #include "TitleMenuWidget.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "BattleWidget.h"
 
 void UTitleMenuWidget::NativeConstruct()
 {
@@ -15,7 +16,19 @@ void UTitleMenuWidget::NativeConstruct()
     TextTest->SetText(FText::FromString(TEXT("Hello")));
 }
 
+/**
+ *スタートボタン押下時
+ */ 
 void UTitleMenuWidget::OnStartButtonClicked(){
     TextTest->SetText(FText::FromString(TEXT("Clicked StartButton")));
-    
+    if (BattleWidgetInstance){
+        BattleWidgetInstance->AddToViewport(1000);
+        return;
+    }
+    if (BattleWidget){
+        BattleWidgetInstance = CreateWidget<UBattleWidget>(GetWorld(), BattleWidget);
+        if (BattleWidgetInstance){
+            BattleWidgetInstance->AddToViewport(1000);
+        }
+    }
 }
