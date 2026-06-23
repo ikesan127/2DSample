@@ -9,6 +9,7 @@
 class UTextBlock;
 class UButton;
 class UProgressBar;
+class UDataTable;
 
 /**
  * 戦闘画面向けC++
@@ -27,6 +28,9 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* TextHp;
+
+    UPROPERTY(EditAnywhere, Category = "Data")
+    UDataTable* CharaDataTable;
 
 protected:
 	virtual void NativeConstruct() override;

@@ -5,6 +5,7 @@
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Components/ProgressBar.h"
+#include "CharacterData.h"
 
 void UBattleWidget::NativeConstruct()
 {
@@ -12,6 +13,19 @@ void UBattleWidget::NativeConstruct()
 
     if (AttackButton){
         AttackButton->OnClicked.AddDynamic(this, &UBattleWidget::OnAttackButtonClicked);
+    }
+    if (CharaDataTable){
+        FCharacterData* Row = CharaDataTable->FindRow<FCharacterData>(
+            FName("C_001"), 
+            TEXT("BattleWidget")
+        );
+        if (Row){
+            TextHp->SetText(FText::Format(
+                FText::FromString(TEXT("{0}/{1}")),
+                FText::AsNumber(Row->MaxHP),
+                FText::AsNumber(Row->MaxHP)
+            ));
+        }
     }
 }
 
