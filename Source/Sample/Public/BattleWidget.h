@@ -43,6 +43,10 @@ public:
 	/** プログレスバー更新用メソッド */
     void UpdateEnemyHPBar();
 
+public:
+    /** ダメージ計算を行うメソッド */
+    int32 CalculateDamage(int32 AttackDamage, float DefenceRate);
+
 protected:
 	virtual void NativeConstruct() override;
 
@@ -58,4 +62,10 @@ private:
 
     /** 敵の名前 */
     FString EnemyName;
+
+    /** プレイヤーの攻撃力 */
+    int32 PlayerAttackDamage;
+
+    /** 敵の防御率 */
+    float EnemyDefenceRate;
 };

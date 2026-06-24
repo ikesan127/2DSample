@@ -23,4 +23,8 @@ struct FEnemyData : public FTableRowBase
     /** 敵の防御率 */
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float EnemyDefenceRate;
+
+    /** 敵の攻撃力 */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int32 EnemyAttackDamage;
 };

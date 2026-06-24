@@ -26,6 +26,7 @@ void UBattleWidget::NativeConstruct()
                 FText::AsNumber(Row->MaxHP),
                 FText::AsNumber(Row->MaxHP)
             ));
+            PlayerAttackDamage = Row->AttackDamage; // プレイヤーの攻撃力を取得
         }
     }
 
@@ -39,10 +40,11 @@ void UBattleWidget::NativeConstruct()
             MaxEnemyHp = EnemyRow->EnemyMaxHp;
             CurrentEnemyHp = MaxEnemyHp;
             EnemyName = EnemyRow->EnemyName;
+            EnemyDefenceRate = EnemyRow->EnemyDefenceRate; // 敵の防御率を取得
 
             // プログレスバーの更新
             if (EnemyHPBar) {
-                EnemyHPBar->SetPercent(CurrentEnemyHp / MaxEnemyHp);
+                EnemyHPBar->SetPercent(1);
             }
         }
     }
@@ -58,5 +60,32 @@ void UBattleWidget::UpdateEnemyHPBar()
 }
 
 void UBattleWidget::OnAttackButtonClicked(){
-    TextHp->SetText(FText::FromString(TEXT("Hello")));
+    if (MaxEnemyHp > 0 && PlayerAttackDamage > 0) {
+        // ダメージ計算メソッドを呼び出し、戻り値としてダメージを取得
+        int32 Damage = CalculateDamage(PlayerAttackDamage, EnemyDefenceRate); 
+        CurrentEnemyHp -= static_cast<float>(Damage);
+
+        // 体力が負値になることを修正
+        if (CurrentEnemyHp < 0) {
+            CurrentEnemyHp = 0;
+        }
+
+        // 体力バーの更新
+        UpdateEnemyHPBar();
+    }
+}
+
+/**
+ * ダメージ計算を行うメソッド
+ * @param AttackDamage 攻撃力
+ * @param DefenceRate 防御率
+ * @return 計算されたダメージ量
+ */
+int32 UBattleWidget::CalculateDamage(int32 AttackDamage, float DefenceRate)
+{
+    if (AttackDamage > 0) {
+        // ダメージ計算: 攻撃力 * (1 - 敵の防御率)
+        return static_cast<int32>(static_cast<float>(AttackDamage) * (1.0f - DefenceRate));
+    }
+    return 0;
 }

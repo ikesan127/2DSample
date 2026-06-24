@@ -22,4 +22,8 @@ struct FCharacterData : public FTableRowBase
     /** キャラクターの防御率 */
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float DefenceRate;
+
+    /** キャラクターの攻撃力 */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int32 AttackDamage;
 };
