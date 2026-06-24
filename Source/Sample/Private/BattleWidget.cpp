@@ -6,6 +6,7 @@
 #include "Components/Button.h"
 #include "Components/ProgressBar.h"
 #include "CharacterData.h"
+#include "EnemyData.h"
 
 void UBattleWidget::NativeConstruct()
 {
@@ -25,6 +26,33 @@ void UBattleWidget::NativeConstruct()
                 FText::AsNumber(Row->MaxHP),
                 FText::AsNumber(Row->MaxHP)
             ));
+        }
+    }
+
+    if (EnemyDataTable){
+        // 敵データの取得
+        FEnemyData* EnemyRow = EnemyDataTable->FindRow<FEnemyData>(
+            FName("E_001"), 
+            TEXT("BattleWidget")
+        );
+        if (EnemyRow){
+            MaxEnemyHp = EnemyRow->EnemyMaxHp;
+            CurrentEnemyHp = MaxEnemyHp;
+            EnemyName = EnemyRow->EnemyName;
+
+            // プログレスバーの更新
+            if (EnemyHPBar) {
+                EnemyHPBar->SetPercent(CurrentEnemyHp / MaxEnemyHp);
+            }
+        }
+    }
+}
+
+void UBattleWidget::UpdateEnemyHPBar()
+{
+    if (MaxEnemyHp > 0) {
+        if (EnemyHPBar) {
+            EnemyHPBar->SetPercent(CurrentEnemyHp / MaxEnemyHp);
         }
     }
 }

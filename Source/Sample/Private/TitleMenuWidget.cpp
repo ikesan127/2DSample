@@ -6,6 +6,10 @@
 #include "Components/TextBlock.h"
 #include "BattleWidget.h"
 
+/** 
+ * タイトル画面向けC++ファイル
+ */
+
 void UTitleMenuWidget::NativeConstruct()
 {
     Super::NativeConstruct();
@@ -16,9 +20,7 @@ void UTitleMenuWidget::NativeConstruct()
     TextTest->SetText(FText::FromString(TEXT("Hello")));
 }
 
-/**
- *スタートボタン押下時
- */ 
+/** スタートボタン押下時 */ 
 void UTitleMenuWidget::OnStartButtonClicked(){
     TextTest->SetText(FText::FromString(TEXT("Clicked StartButton")));
     if (BattleWidgetInstance){

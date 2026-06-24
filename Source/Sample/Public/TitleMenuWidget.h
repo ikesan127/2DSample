@@ -11,7 +11,7 @@ class UTextBlock;
 class UBattleWidget;
 
 /**
- * タイトル画面向けC++
+ * タイトル画面向けヘッダファイル
  */
 UCLASS()
 class SAMPLE_API UTitleMenuWidget : public UUserWidget
@@ -19,12 +19,15 @@ class SAMPLE_API UTitleMenuWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+	/** 開始ボタン */
 	UPROPERTY(meta = (BindWidget))
 	UButton* StartButton;
 
+	/** タイトル表示用テキスト */
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* TextTest;
 
+	/** 戦闘画面UI */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UBattleWidget> BattleWidget;
 
