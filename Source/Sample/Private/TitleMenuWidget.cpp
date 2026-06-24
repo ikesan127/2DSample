@@ -1,10 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "TitleMenuWidget.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "BattleWidget.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 /** 
  * タイトル画面向けC++ファイル
@@ -17,12 +15,13 @@ void UTitleMenuWidget::NativeConstruct()
     if (StartButton){
         StartButton->OnClicked.AddDynamic(this, &UTitleMenuWidget::OnStartButtonClicked);
     }
-    TextTest->SetText(FText::FromString(TEXT("Hello")));
+    if (EndButton){
+        EndButton->OnClicked.AddDynamic(this, &UTitleMenuWidget::OnEndButtonClicked);
+    }
 }
 
-/** スタートボタン押下時 */ 
+/** スタートボタン押下時 */
 void UTitleMenuWidget::OnStartButtonClicked(){
-    TextTest->SetText(FText::FromString(TEXT("Clicked StartButton")));
     if (BattleWidgetInstance){
         BattleWidgetInstance->AddToViewport(1000);
         return;
@@ -33,4 +32,14 @@ void UTitleMenuWidget::OnStartButtonClicked(){
             BattleWidgetInstance->AddToViewport(1000);
         }
     }
+}
+
+/** 終了ボタン押下時 */
+void UTitleMenuWidget::OnEndButtonClicked(){
+    UKismetSystemLibrary::QuitGame(
+        GetWorld(),
+        GetOwningPlayer(),
+        EQuitPreference::Quit,
+        false
+    );
 }

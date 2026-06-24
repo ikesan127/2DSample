@@ -23,6 +23,10 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UButton* StartButton;
 
+	/** 終了ボタン */
+	UPROPERTY(meta = (BindWidget))
+	UButton* EndButton;
+
 	/** タイトル表示用テキスト */
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* TextTest;
@@ -38,6 +42,10 @@ private:
 	/** スタートボタン押下時 */
 	UFUNCTION()
 	void OnStartButtonClicked();
+
+	/** 終了ボタン押下時 */
+	UFUNCTION()
+	void OnEndButtonClicked();
 
 	UPROPERTY()
 	UBattleWidget* BattleWidgetInstance;
