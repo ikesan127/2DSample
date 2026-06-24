@@ -16,6 +16,7 @@ void UBattleWidget::NativeConstruct()
         AttackButton->OnClicked.AddDynamic(this, &UBattleWidget::OnAttackButtonClicked);
     }
     if (CharaDataTable){
+        // プレイヤーのデータを取得
         FCharacterData* Row = CharaDataTable->FindRow<FCharacterData>(
             FName("C_001"), 
             TEXT("BattleWidget")
@@ -26,7 +27,10 @@ void UBattleWidget::NativeConstruct()
                 FText::AsNumber(Row->MaxHP),
                 FText::AsNumber(Row->MaxHP)
             ));
-            PlayerAttackDamage = Row->AttackDamage; // プレイヤーの攻撃力を取得
+            PlayerAttackDamage = Row->AttackDamage;
+            PlayerMaxHp = Row->MaxHP;
+            CurrentPlayerHp = Row->MaxHP;
+            PlayerDefenceRate = Row->DefenceRate;
         }
     }
 
@@ -40,7 +44,8 @@ void UBattleWidget::NativeConstruct()
             MaxEnemyHp = EnemyRow->EnemyMaxHp;
             CurrentEnemyHp = MaxEnemyHp;
             EnemyName = EnemyRow->EnemyName;
-            EnemyDefenceRate = EnemyRow->EnemyDefenceRate; // 敵の防御率を取得
+            EnemyDefenceRate = EnemyRow->EnemyDefenceRate;
+            EnemyAttackDamage = EnemyRow->EnemyAttackDamage;
 
             // プログレスバーの更新
             if (EnemyHPBar) {
@@ -52,26 +57,56 @@ void UBattleWidget::NativeConstruct()
 
 void UBattleWidget::UpdateEnemyHPBar()
 {
-    if (MaxEnemyHp > 0) {
-        if (EnemyHPBar) {
-            EnemyHPBar->SetPercent(CurrentEnemyHp / MaxEnemyHp);
-        }
+    if (EnemyHPBar) {
+        EnemyHPBar->SetPercent(CurrentEnemyHp / MaxEnemyHp);
     }
 }
 
 void UBattleWidget::OnAttackButtonClicked(){
-    if (MaxEnemyHp > 0 && PlayerAttackDamage > 0) {
-        // ダメージ計算メソッドを呼び出し、戻り値としてダメージを取得
-        int32 Damage = CalculateDamage(PlayerAttackDamage, EnemyDefenceRate); 
-        CurrentEnemyHp -= static_cast<float>(Damage);
+    // 敵へのダメージ計算と更新
+    int32 DamageToEnemy = CalculateDamage(PlayerAttackDamage, EnemyDefenceRate); 
+    CurrentEnemyHp -= static_cast<float>(DamageToEnemy);
 
-        // 体力が負値になることを修正
-        if (CurrentEnemyHp < 0) {
-            CurrentEnemyHp = 0;
+    if (CurrentEnemyHp < 0) {
+        CurrentEnemyHp = 0;
+    }
+
+    UpdateEnemyHPBar();
+
+    // プレイヤーへのダメージ計算と更新
+    if (CurrentEnemyHp > 0) {
+        int32 DamageToPlayer = CalculateDamage(EnemyAttackDamage, PlayerDefenceRate);
+        CurrentPlayerHp -= static_cast<float>(DamageToPlayer);
+
+        if (CurrentPlayerHp < 0) {
+            CurrentPlayerHp = 0;
+            TextGameOver->SetRenderOpacity(1.0f);
+            GetWorld()->GetTimerManager().SetTimer(
+                DelayTimerHandle,
+                this,
+                &UBattleWidget::CloseWidget,
+                5.0f,
+                false
+            );
         }
 
-        // 体力バーの更新
-        UpdateEnemyHPBar();
+        // 体力表示テキストの更新
+        if (TextHp) {
+            TextHp->SetText(FText::Format(
+                FText::FromString(TEXT("{0}/{1}")),
+                FText::AsNumber(static_cast<float>(CurrentPlayerHp)),
+                FText::AsNumber(PlayerMaxHp)
+            ));
+        }
+    } else {
+        TextClear->SetRenderOpacity(1.0f);
+        GetWorld()->GetTimerManager().SetTimer(
+            DelayTimerHandle,
+            this,
+            &UBattleWidget::CloseWidget,
+            5.0f,
+            false
+        );
     }
 }
 
@@ -88,4 +123,9 @@ int32 UBattleWidget::CalculateDamage(int32 AttackDamage, float DefenceRate)
         return static_cast<int32>(static_cast<float>(AttackDamage) * (1.0f - DefenceRate));
     }
     return 0;
+}
+
+void UBattleWidget::CloseWidget()
+{
+    RemoveFromParent();
 }

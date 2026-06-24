@@ -14,9 +14,8 @@ class SAMPLE_API AWidgetManageActor : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AWidgetManageActor();
-	//タイトルメニュー画面
+	/** タイトルメニュー画面 */
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UTitleMenuWidget> TitleMenuWidget;
 
@@ -25,11 +24,9 @@ private:
 	UTitleMenuWidget* TitleMenuInstance;
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 };

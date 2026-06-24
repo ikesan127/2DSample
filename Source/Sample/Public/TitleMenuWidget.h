@@ -35,6 +35,7 @@ protected:
 	virtual void NativeConstruct() override;
 
 private:
+	/** スタートボタン押下時 */
 	UFUNCTION()
 	void OnStartButtonClicked();
 

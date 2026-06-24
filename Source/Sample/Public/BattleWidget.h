@@ -32,6 +32,14 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* TextHp;
 
+	/** クリア表示用テキスト */
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* TextClear;
+
+	/** GameOver表示用テキスト */
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* TextGameOver;
+
 	/** キャラクターデータテーブル */
     UPROPERTY(EditAnywhere, Category = "Data")
     UDataTable* CharaDataTable;
@@ -53,19 +61,41 @@ protected:
 private:
 	UFUNCTION()
 	void OnAttackButtonClicked();
+	// ----------------------------------------
+	// プレイヤー
+	// ----------------------------------------
+    /** プレイヤーの最大体力 */
+    float PlayerMaxHp;
 
-	/** 現在の敵の体力 */
-	float CurrentEnemyHp;
+    /** プレイヤーの体力 */
+    float CurrentPlayerHp;
+
+	/** プレイヤーの攻撃力 */
+    int32 PlayerAttackDamage;
+
+    /** プレイヤーの防御率 */
+    float PlayerDefenceRate;
+
+	// ----------------------------------------
+	// 敵
+	// ----------------------------------------
+	/** 敵の名前 */
+    FString EnemyName;
 
     /** 敵の最大体力 */
     float MaxEnemyHp;
 
-    /** 敵の名前 */
-    FString EnemyName;
+	/** 敵の体力 */
+	float CurrentEnemyHp;
 
-    /** プレイヤーの攻撃力 */
-    int32 PlayerAttackDamage;
+    /** 敵の攻撃力 */
+    int32 EnemyAttackDamage;
 
     /** 敵の防御率 */
     float EnemyDefenceRate;
+
+    UFUNCTION()
+    void CloseWidget();
+
+	FTimerHandle DelayTimerHandle;
 };
